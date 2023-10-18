@@ -2,6 +2,8 @@
 
 This is a trivially simple idea just to set up the problem before I move onto more interesting ones.
 
+I suppose, in retrospect, this experiment is investigating how multiplication between two continuous values is typically (optimally?) carried out in MLPs.
+
 ## The plan
 
 - Define a very small neural network (really doesn't need to be more than a single layer sans activation, but I'll probably try a few things)
@@ -30,3 +32,11 @@ Now with a single hidden layer (still with a dimensionality of 2).
 Breaking down each operation to understand how the vectors are manipulated throughout the "network". Also applying SVD.
 
 When trained to convergence, the results look very similar but the tensor operations (at first glance) look difference. Feel like there _must_ be some equivalence between them so trying to find that.
+
+Looks like I could split the resulting trained models into 3 rough modes. I looked at the most promising one in more detail and came up with some early hypotheses on how it is carrying out multiplication.
+
+Introducing seeds too 😅
+
+### Experiment 4
+
+Same setup as Experiment 3 but now finding a better (cleaner) example of the 3rd mode of resulting model with more insight on what is happening between the ReLU and final linear layers.

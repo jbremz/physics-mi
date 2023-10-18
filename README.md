@@ -4,6 +4,8 @@ I have this idea to look inside models that are trained to model physics data (r
 
 Maybe this is a stupid idea but I'm keen to play around (without having done _too_ much of a literature review) as that'll probably provide me with the most intuitive insight.
 
+**NOTE: this repo currently represents research in progress so is unlikely to be _completely_ tidy, such is the research process.**
+
 ## Structure
 
 - `experiments` - where I will lay out my individual experiments (primarly in jupyter notebooks)
