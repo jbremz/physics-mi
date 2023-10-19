@@ -22,3 +22,8 @@ class SingleLayerNet(nn.Module):
 
     def forward(self, x):
         return self.layers(x)
+
+
+def print_model_params(model):
+    for name, param in model.named_parameters():
+        print(name, "\n", param.data, "\n")

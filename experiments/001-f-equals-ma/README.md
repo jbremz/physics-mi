@@ -40,3 +40,7 @@ Introducing seeds too 😅
 ### Experiment 4
 
 Same setup as Experiment 3 but now finding a better (cleaner) example of the 3rd mode of resulting model with more insight on what is happening between the ReLU and final linear layers.
+
+### Experiment 5
+
+Following on from Experiment 4, I've changed the data input distribution (to be uniform in the _input_) to show that it alters the skew of the transformed unit square at the `preacts` stage. This makes intuitive sense as it focuses the model's performance more on the smaller values.
