@@ -44,3 +44,11 @@ Same setup as Experiment 3 but now finding a better (cleaner) example of the 3rd
 ### Experiment 5
 
 Following on from Experiment 4, I've changed the data input distribution (to be uniform in the _input_) to show that it alters the skew of the transformed unit square at the `preacts` stage. This makes intuitive sense as it focuses the model's performance more on the smaller values.
+
+### Experiment 6
+
+I hand-crafted my own algorithm to see where what really mattered and if I really understood what was going on. Didn't do too bad a job although it wasn't optimal.
+
+### Experiment 7
+
+I took the hand-crafted model from Experiment 6 and optimised it further with backprop. The results were interesting in reintroducing the skew but not really changing the y-displacement at `preacts` stage.
