@@ -75,3 +75,5 @@ Now I'd like to see if I could develop some kind of "probe" for the existence of
 Ideally, I'd like this to lead me towards some kind of probe I could use in higher dimensions (where it's trickier to do visualisations).
 
 **NOTE:** maybe I should stop using the word "probe" as it seems to be used to describe something slightly different in the literature (although the general aim is similar) see [here](https://arxiv.org/pdf/2102.12452.pdf). Perhaps scan or algorithm scan might be a better term?
+
+In the end I manage to hack together a scanning function that has 100% AUC against randomly initialised networks. Doesn't feel very neat though and I realise there are important questions to answer about how one might apply this to larger networks. As a result I think I might not continue pursuing this _just_ now (even though I think it still has worth).
