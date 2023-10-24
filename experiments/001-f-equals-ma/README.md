@@ -77,3 +77,29 @@ Ideally, I'd like this to lead me towards some kind of probe I could use in high
 **NOTE:** maybe I should stop using the word "probe" as it seems to be used to describe something slightly different in the literature (although the general aim is similar) see [here](https://arxiv.org/pdf/2102.12452.pdf). Perhaps scan or algorithm scan might be a better term?
 
 In the end I manage to hack together a scanning function that has 100% AUC against randomly initialised networks. Doesn't feel very neat though and I realise there are important questions to answer about how one might apply this to larger networks. As a result I think I might not continue pursuing this _just_ now (even though I think it still has worth).
+
+## Closing experiment remarks
+
+I suppose in retrospect this umbrella-experiment (with 10 sub experiments) was looking at single-layer networks with two hidden dimensions and how they perform multiplication. I'm pretty confident I've answered that and found more interesting detail than I expected...
+
+Now feels like a good time to start a fresh high-level experiment as conceptually I would like to extend beyond this scenario into:
+
+1. more layers
+2. more hidden dimensions
+
+I'm going to start with 1. because I _feel_ like for this problem at least it should be simpler to understand as I have already built quite expressive tooling for visualising activations/layer outputs in 2 dimensions.
+
+**Just to write it down _somewhere_:** I've been having lots more thoughts on how one could search for particular internal circuits/algorithms but in a more unsupervised way i.e. _without_ knowing what we're initially looking for. It seems to me that one would need to train some meaningful representation given the input of certain parameters/parts of a network.
+
+How could you do this? I wonder perhaps whether you could do your standard cloze task but with a regression on the obscured parameter values? The network tries to "fill-in" the missing parameter values, the intuition being that it can use the context to understand _what a certain group of parameters are trying to achieve_ and therefore use this to help it predict the neighbouring parameters.
+
+Regardless of the specifics of the training process, I'd hope then that you may have a general feature extractor which you could use to characterise different sections of the network. One could e.g. perform clustering on the resulting embeddings to identify functionally equivalent parts of the network?
+
+Potential issues/questions I see here:
+
+1. To train something like this you might need a big network to train on (as the subject network) and the investigator network would need to be an appropriate size not to overfit on it
+2. Would there be transfer between different networks e.g. could you train it on one subject and then extract meaningful features on a separate network? I suppose this would depend on architecture etc. Maybe it would still be useful when trained and evaluated on the same network?
+3. There are questions around input: what would the input look like? How would you deal with the potential of different hierarchies of algorithm size (i.e. how do you define the unit of interest)? Maybe there could be a variety of sizes inputted with padding. How would you tell the network which parameters correspond to which types of operation? Would you have a sliding window at inference?
+4. Potentially this training task is just too difficult to achieve to get nice clean representations?
+
+Would be cool to think of other unsupervised methods for generating parameter representations (you could _almost_ call these meta-representations but not quite).
