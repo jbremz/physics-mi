@@ -41,4 +41,10 @@ Find more optimal training runs and intuitively understand the result. It played
 
 Now starting to think about the more general trend in higher dimensions still. How do these findings generalise?
 
-I can either think my way to the answer or look at it empirically 🤔  
+I can either think my way to the answer or look at it empirically 🤔
+
+I suppose pursuing the former (followed by confirming with the latter), I'd imagine this behaviour to generalise fairly straightforwardly in higher dimensions? That is, **dividing the task of projecting different parts of the unit square by using different components** - I suppose this is not unlike the piecewise linear view of ReLU-based neural networks (where each node deals with different subspaces of the input in a linear way).
+
+### `003-16D`
+
+Now really upping the dimensionality. Hopefully this is a fairly general example of a "higher" dimensional hidden layer.
