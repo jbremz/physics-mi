@@ -48,3 +48,29 @@ I suppose pursuing the former (followed by confirming with the latter), I'd imag
 ### `003-16D`
 
 Now really upping the dimensionality. Hopefully this is a fairly general example of a "higher" dimensional hidden layer.
+
+### `004-4D`
+
+Developed a better plotting function for visualising the effect of different neurons on the final result across the unit square.
+
+### `005-4D-more-modes`
+
+Start to observe more structure amongst the roles of different neurons and that there are often a handful of neurons that do the brunt of the work and the rest are for finer adjustments.
+
+### `006-16D-revisited`
+
+Now with better graphing functions I can revisit the higher dimensional case. Found that there are (understandably) a lot of solutions but also a lot of redundancy.
+
+#### Some questions that arise from this
+
+1. are there any more interesting underlying dynamics going on here? I think I can currently intuitively understand that the random initialisations of the weights (and data) almost predisposes some nodes to be destined for certain roles more than others (especially with full gradient descent). There are many different favourable configurations of linear transformations (coupled with the static ReLUs) that can result in good performance once you increase the number of hidden dimensions and we're seeing them here. **There might not be much more sense to this than that** - at least that's what I'm feeling right now.
+1. I suppose one could look at scaling laws of the "active" vs "redundant" nodes (should I be calling them neurons?) with respect to various conditions
+1. One question this _does_ raise though, is that since we evidently have redundancy in this network, what happens when we increase the complexity of the task to be learnt? This could take many forms e.g. multiplying > 2 numbers, doing multiple different operations at once etc. Do these then end up "filling up" the other neurons and operating in parallel or does the network find more sophisticated ways of distributing this task in parallel across neurons (some kind of continuous functional polysemanticity 👀). This could be interesting to understand.
+
+On the final point, I think this kind of idea very much relies on identifying the relevant neurons for a particular portion of the task. I suppose one could explore this by having two outputs (one for each task) and examining whether we see a sharing of the computational load across the neurons or whether they remain functionally partitioned. I think this could work and could be straightforward to try out 🤔
+
+Could be some interesting effects of increasing functional redundancy/separation with increasing hidden dimension a la Toy models of superposition paper... (and inversely: increasing superposition at smaller hidden dimensions? Whatever this might mean in the continuous space?)
+
+My intuition would tell me that the two output case would generalise then to intermediate calculations that are used by later layers in deeper networks but this would need to be checked.
+
+I'd hope that this would at least help on the journey towards functional classification of different groups of neurons.
