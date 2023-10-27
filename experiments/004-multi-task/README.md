@@ -28,3 +28,17 @@ As a note, what makes this kind of problem much easier at the moment is that I c
 ## General things on my mind
 
 - Continuing my thoughts from the end of `001-f-equals-ma`, I've been thinking more about the issue of choosing the right parameters to feed into a cloze task e.g. do you feed in a whole layer (but then lose granularity) OR you could use some kind of neuron importance metric derived from the above problem setup (i.e. which hidden layer neurons are "activated" for each output neuron - maybe conceptually similar to ACDC) to define a subset to operate over. This feels to me to be a potentially neat way to automatically partition the network into functionally separate entities.
+
+## Experiments
+
+### `001-multi-mult`
+
+I set up the problem with parallel multiplications and found some interesting results involving _some_ neurons that seemed to be mono-functional (i.e. only serve the result of one of the tasks) and some that seem to contribute towards both. Their distribution looked interesting on some of the training runs I tried but I needed more data to really understand it. Hence...
+
+### `002-multi-mult-ind-dist`
+
+I wrote a script `train.py` to train and evaluate 100 models.
+
+In the notebook I go into analysing the results.
+
+Looks like ~60% of the outputs are within $\pm 5\%$ orthogonal (i.e. roughly orthogonal). Now need to look into what's up with the rest 🤔
