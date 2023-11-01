@@ -33,10 +33,12 @@ def get_valid_loss(model, loss_func, X_valid, Y_valid):
     return loss_func(out, Y_valid)
 
 
-def plot_results(y_preds, y_targs):
-    _, ax = plt.subplots()
+def plot_results(y_preds, y_targs, ax=None):
+    if ax is None:
+        _, ax = plt.subplots()
 
     ax.scatter(y_preds, y_targs, s=4, label="predictions")
     ax.plot(y_targs, y_targs, color="salmon", ls="--", lw=0.5, label="perfect accuracy")
     ax.set(xlabel="y_preds", ylabel="y_targs")
     ax.legend()
+    ax.set_aspect("equal")

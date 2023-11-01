@@ -28,6 +28,7 @@ As a note, what makes this kind of problem much easier at the moment is that I c
 ## General things on my mind
 
 - Continuing my thoughts from the end of `001-f-equals-ma`, I've been thinking more about the issue of choosing the right parameters to feed into a cloze task e.g. do you feed in a whole layer (but then lose granularity) OR you could use some kind of neuron importance metric derived from the above problem setup (i.e. which hidden layer neurons are "activated" for each output neuron - maybe conceptually similar to ACDC) to define a subset to operate over. This feels to me to be a potentially neat way to automatically partition the network into functionally separate entities.
+- One idea I have: train two separate single-task models, pruning them by 50%, and then combining them into a single _multi-task_ model. Then I can train this model further to understand whether, from this (potentially local) optimum, there is a mixing of the task functionality (and if this is favourable for performance). My intuition is that if this happens then it shouldn't result in a lower loss. Perhaps introducing regularisation would force the model to share more functionality between the tasks though.
 
 ## Experiments
 
