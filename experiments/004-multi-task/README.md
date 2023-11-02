@@ -57,3 +57,7 @@ Built the intuition that changing the model inputs for one of the tasks simply t
 Obviously makes sense much more complicated when we're not working in the natural basis but hey _that's the game_.
 
 I've still been thinking about my problem of how one might define the subnetwork that we intend to embed (with the cloze task - see the end of the README for `001-f-equals-ma`). My newest idea: simply see which subnetwork is activated by traversing a certain input space (e.g. changing an input in my particular task) and then picking the parameters according to which ones were involved in the calculation of the final output on a layer by layer basis. I haven't quite worked out the details, but they're starting to form.
+
+I've thought a little about the invariant hyperplane business, and I'm still wondering whether stacked hidden layers will necessarily choose to linearly "access" projections invariant to certain variations in the input space. Surely they could continue to represent this invariance in a "unnatural" basis in the next layer and so on - accessing it in a much more abstract way (to us).
+
+I wonder if you could chase an invariance through successive network layers by [I lost my train of thought] (and whether this would be useful).
