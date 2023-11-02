@@ -42,4 +42,18 @@ I wrote a script `train.py` to train and evaluate 100 models.
 
 In the notebook I go into analysing the results.
 
-Looks like ~60% of the outputs are within $\pm 5\%$ orthogonal (i.e. roughly orthogonal). Now need to look into what's up with the rest 🤔
+Looks like ~40% of the outputs are within $\pm 5\%$ orthogonal (i.e. roughly orthogonal). Now need to look into what's up with the rest 🤔
+
+I did a lot of analysis here but only ended up confusing myself. It seemed like the non-orthogonal neurons were contributing less by some measures and more by others. I've decided to simplify my analysis to look at single examples again, just to make sure the metrics I've developed are sensible and I understand them fully.
+
+### `003-multi-mult-ind`
+
+Now focusing on a single example at a time.
+
+This is what I needed to realise that the network wasn't restricted to using the natural basis of the neurons and that the trained models were really just operating in a rotated space the whole time at the `layer.0.act` stage.
+
+Built the intuition that changing the model inputs for one of the tasks simply translated the activations on the hyperplane perpendicular to the other task's output projection - therefore minimising destructive interference. One of those things that seems obvious in retrospect but I'm glad I've learnt it for myself.
+
+Obviously makes sense much more complicated when we're not working in the natural basis but hey _that's the game_.
+
+I've still been thinking about my problem of how one might define the subnetwork that we intend to embed (with the cloze task - see the end of the README for `001-f-equals-ma`). My newest idea: simply see which subnetwork is activated by traversing a certain input space (e.g. changing an input in my particular task) and then picking the parameters according to which ones were involved in the calculation of the final output on a layer by layer basis. I haven't quite worked out the details, but they're starting to form.
