@@ -105,3 +105,11 @@ I'm going to:
 1. with the PCA components for each task I can look into whether the activations vary roughly on a plane for an individual task and whether these planes are orthogonal to each other
 
 I think this should offer fairly conclusive evidence whether there is interference between the tasks in the middle layers or not?
+
+Rather than thinking about planes (because the data doesn't sit on simple a plane mate, it's proper manifold business), I just:
+
+- inspected some of the principal components between the two tasks - some nice plots showed that they have some nice structure with some separation and some overlap as expected
+- looked deeper into the principal components and found some cool orthogonal structure in a way that makes sense to me (low variance on one task orthogonal to high variance on the other task with a load of other low variance components as noise)
+- also seems that the variances explained in each dimension drops off quite significantly, meaning that even when there is interference between the tasks, it doesn't matter anyway
+
+Feels like I'm finally making progress here.
