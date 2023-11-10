@@ -114,3 +114,48 @@ Rather than thinking about planes (because the data doesn't sit on simple a plan
 Feels like I'm finally making progress here.
 
 Had some thoughts about what this means for my function detection idea and it seems like I need to work out what to do with this activation space.
+
+### `009-multi-task-pca-dist`
+
+Here I was aiming to run repeats for the past experiment. These were useful in smoothing out the behaviour.
+
+#### Observations
+
+- symmetry emerges between tasks as expected
+- previous hypotheses still hold:
+  - most variance explained across two components for each task
+  - the other task's variance is smoothly distributed between remaining principal components. Would be interesting to understand this distribution with relation to PCA and the geometry of these spaces.
+  - there's some interesting structure in the similarity matrices that I don't understand yet but the core facts about the highest variance principal components remain the same
+
+The next experiment is more exciting to me for now.
+
+### `010-combined-vs-separate`
+
+I wanted to test whether the highest-variance principal components extracted from each task separately would also exist in the principal components extracted from the whole dataset (combined tasks). This would be very handy because it would remove the need to have prior knowledge about what the tasks are and how to vary them independently (which would become very hard if we start to think about abstract notions of internal tasks).
+
+Intuitively, I'd hope that there is some relationship between these two (or three) sets of principal components.
+
+Turns out there was, and it was quite nice 👍 (it's also simpler to be just considering one set of PCs again 😅 and not worrying about directionality).
+
+There seemed to be a nice independence between the task association for each component. In fact, interestingly it looks like on average ~80% of the variance is explained by the dominant task for each component - across essentially all the components 🤔. We also see that for this task, essentially all the important variance is contained within the first four components.
+
+This is nice. But we're left with the issue of how to cluster the components into their separate tasks. Some ideas here:
+
+1. Look at covariance between the components within the same layer - but I'm not sure if this would work out properly.
+1. Look at covariance from PCs in neighouring layers and potentially build out some graph structure from the dependencies. _This_ seems like a fun idea.
+
+I mean _surely_ someone has tried these before?
+
+I think I'm going to look at 2. for the next experiment. Might be a nice point to move on to a new master experiment.
+
+## Experiment summary
+
+My aim in this experiment was to see whether I could understand how the MLP would treat two independent tasks. I think I was generally hoping to see some orthogonal processing going on.
+
+I started looking at things in the neuron basis and after much wandering around, finally built my intuition that the MLP rarely seems to ever work in the neuron basis. In fact, it feels like it's _beneficial_ to work in a basis misaligned with the neurons.
+
+I found the first evidence of task orthogonality in the final linear mapping to the outputs.
+
+I then focused on whether there existed orthogonal processing in the intermediate layers of an MLP and spent some time looking at the parameter space without much luck. However, once I switched to the activation space, things became much clearer and I was able to find evidence of this.
+
+I built out some PCA tooling to successfully (I think) find the relevant task components for the two separate tasks in my hidden activations and show that they're more or less independent between the tasks.
