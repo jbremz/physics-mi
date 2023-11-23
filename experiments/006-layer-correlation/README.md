@@ -20,3 +20,18 @@ The idea is very simple and goes:
 1. Compute covariances between the PC activations between separate layers
 1. Somehow use these covariances to create something of a computational graph of subspaces that correspond to different tasks (I'm shaky on the details for this part)
 1. Compare the labels produced from the previous step with ground truth labels that we can produce from our prior knowledge of the tasks involved
+
+### `002-check-rand-dist`
+
+Holiday me realised that I should check that the results I produced in `004-multi-task/010-combined-vs-separate-components` also stand when I extract components from a more typical input distribution where the tasks vary simultaneously (not this nice dataset I'd created where they vary independently).
+
+Looks like the same results hold 👍 this is good because it means we have a good chance of extracting the orthogonal task components from a validation-set input distribution (which we will always have).
+
+It did raise the question of whether the ~20% task interference that _does_ exist originates from:
+
+- inherent non-orthogonality in the processing of the network, or
+- limitations in the use of PCA to find the orthogonal components
+
+Had some ideas about how one could see if the parameters contain information for these orthogonal task components using a regression modelling task. This would be cool.
+
+Also had some ideas about task capacity in MLP layers.
