@@ -35,3 +35,30 @@ It did raise the question of whether the ~20% task interference that _does_ exis
 Had some ideas about how one could see if the parameters contain information for these orthogonal task components using a regression modelling task. This would be cool.
 
 Also had some ideas about task capacity in MLP layers.
+
+### `003-subspace-graph-revisit`
+
+After the confirmation of the last experiment, I decided to change my work flow so that I now used the PCA components from the validation set throughout.
+
+Here I followed the same path as in `001` but stopped at the correlation matrix because I'd realised that this kind of analysis was unlikely to produce the clean results that I wanted. Of course, the next layer is going to use various weighted _combinations_ of the previous layer outputs to map onto the principal components of the next layer, and equally, it might be finding spaces orthogonal to hyperplanes traversed by the opposite task's components so as to remain independent to them. This would be very hard to read off a correlation matrix I feel.
+
+This feels like a similar trap to the one I first fell into with `004-multi-task`.
+
+With this understandig, one _could_ I suppose try to find groups of principal components in the previous layer that correlate well or produce close to zero correlation with the next layer PC outputs to divide the tasks up, but this seems to be a combinatorially hard problem and one that might not scale very well.
+
+I had an idea: why not use PLSR (partial least-squares regression) to find the components in the layer0 output space that correlate the most with the layer1 output space. These won't necessarily be the principal components from layer0, in fact, we'd expect them to be linear combinations of the principal components from layer0. From finding the overlap between these PLSR components in layer0 space and the PCs from layer0 space, then we can hopefully start grouping with a graph structure.
+
+I'm really unsure whether this will work but let's see and maybe I'll learn something.
+
+### `004-inter-layer-plsr`
+
+Ok so, here's the plan:
+
+1. get multi-layer activations for validation set
+1. get multi-layer activations for task datasets
+1. calculate PCs from valid_acts for both layers
+1. use the PCs from layer1 as our dependent variable and the activation space of layer0 as our multivariate input independent variable and perform PLSR
+1. take the resulting layer0 PLSR components and see how they overlap with PC components from layer0
+1. maybe we can produce some groupings of the layer0 PCs from this process
+
+Seems quite tenuous at this stage but hopefully we'll learn something.
