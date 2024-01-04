@@ -62,3 +62,21 @@ Ok so, here's the plan:
 1. maybe we can produce some groupings of the layer0 PCs from this process
 
 Seems quite tenuous at this stage but hopefully we'll learn something.
+
+The results look good. There is fairly clear task-separation between the input layer PLSR components. It seems from this that one could build up something of a computation graph between components for subsequent layers. I put down an idea to then display this graphically by creating two sets of components per layer:
+
+- one is the output space for that layer - formed from doing PLSR with that layer and layer before
+- the next would be the input space for the next layer - formed from doing PLSR with this layer's outputs and the outputs of the next layer
+
+This could look nice, are there would be intra-layer weights (between the two different sets of components) too, which would represent the mapping from the raw features in the activations (those which explain the most variance in the data) and the components which are important for the next layer (which could of course be mixtures of the other features). This could show how features are combined in a nice way e.g. I'd imagine for this multiplication task that at some point before the last layer, we'd see mixing between the magnitude features for the pairs of numbers involved in each multiplication but importantly _not_ between the independent multiplications.
+
+**But I have a more fun idea**: the problem with this PLSR business is that it uses a linear assumption for what we're modelling which is _almost_ correct except for our non-linearity. It evidently works roughly speaking at this single linear layer level but if we were modelling a not-so-linear layer then I'd imagine it might not so well.
+
+Really, it seems to me that back propagation is closer to what we're looking for. We could set up a system whereby we create a further (temporary) linear layer that simply linearly accesses the PCA components we've extracted, _then_ we do backpropagation on each of the output logits from this layer to the previous layer activations in order to find the components there that maximally activate each output logit.
+
+Questions/issues:
+
+- I suppose we'd need to run this across a number examples and average the resulting vectors - roughly as we have been with PLSR using the validation set
+- maybe that's it?
+
+This would hopefully model the non-linearities more faithfully (completely faithfully?).
