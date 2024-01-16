@@ -7,6 +7,7 @@ _Now_ I've had an idea to identify sub-networks corresponding to different tasks
 ## General thoughts on my mind
 
 - I think I'm still more drawn towards parameter spaces but I'm hoping that understanding the activation spaces might help as a way into the parameter space problem.
+- [This circuits thread](https://distill.pub/2020/circuits/branch-specialization/) on branch specialisation looks to be quite related to this work (albeit with CNNs). They use SVD (as I was before) on the weight matrix to find some evidence of branch specialisation (maybe what I call task independence or independent/orthogonal task treatment). Might be nice to tie these two views up.
 
 ## Experiments
 
@@ -80,3 +81,25 @@ Questions/issues:
 - maybe that's it?
 
 This would hopefully model the non-linearities more faithfully (completely faithfully?).
+
+### `005-inter-layer-backprop`
+
+I've since read about a few people trying similar things but for different purposes (e.g. this recent post [_Case Studies in Reverse-Engineering Sparse Autoencoder Features by Using MLP Linearization_](https://www.lesswrong.com/posts/93nKtsDL6YY5fRbQv/case-studies-in-reverse-engineering-sparse-autoencoder)) so I feel like this is a good idea. Lots of people sniffing up this particular tree.
+
+I created a very simple "scaffold model" which essentially loads an internal layer of the network (e.g. layer1) and the previous layer's (layer0) activations (i.e. inputs to layer1) and then computes the gradient of a single PCA component in layer1's activations with respect to each dataset example.
+
+Interesting things I've noticed:
+
+- I then ran PCA on these input activation gradients to (if my intuition is correct) find the components in the input activation space that produce the largest change in the PCA component I'm studying. It seems that most of the variance tends to be explained in the first four or so components although I need to be careful to get my head around which ones are actually making the most difference by joining up high variance components in this layer0 input space to high variance components in layer1 output space. I think it's high time I created a plot to stop me going crazy.
+- One thing I haven't been able to explain is that when I plot a dimensionality reduction of these activation gradients, I find that 18 very neat clusters form 🤔 Perhaps there's a neat explanation for this but what it's telling me right now is that within in the 2000 examples I have, there are 18 distinct directions in the activation space that are affecting the layer1 PC being studied. Some of these clusters seem much bigger than others, I'm going to try plotting the principal components on this same plot in order to see if there are any interesting relations with the clusters.
+
+You can read in the notebook for more detailed thoughts (as always) but I have a line of enquiry I'm going to follow next which will hopefully help put to bed this question of whether there is orthogonal task processing happening internally (as we suspect). If I can answer this question soundly then I can move onto the question of _how_ to pull apart the internal representations into separate tasks in an unsupervised way.
+
+### `006-backprop-from-outputs`
+
+#### Proposal
+
+- backprop from task outputs to each layer to generate activation space gradients
+- apply PCA to these gradients (as we have done above)
+- we will then have two sets of components, one for each task for every set of activations (I suppose all the way back to the individual inputs)
+- compare these two sets of components and test for orthogonality (at least in the highest variance components for each task).
