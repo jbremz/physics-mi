@@ -103,3 +103,29 @@ You can read in the notebook for more detailed thoughts (as always) but I have a
 - apply PCA to these gradients (as we have done above)
 - we will then have two sets of components, one for each task for every set of activations (I suppose all the way back to the individual inputs)
 - compare these two sets of components and test for orthogonality (at least in the highest variance components for each task).
+
+#### Results
+
+Wow looks pretty nice:
+
+- took me a while to realise but it seems that there are a discrete number of different gradients observed in the dataset, this was unexpected but maybe makes sense to me given we have our non-linearities turning paths on and off.
+- these unique gradients are almost always completely orthogonal between tasks. Very clean.
+- lots more thoughts in the notebook
+
+#### Plan
+
+- Devise mathematical notation to properly label all these quantities I've been plotting
+- Apply same analysis across:
+  - the other layers
+  - more model repeats
+- Think about how I can represent these as computational graphs to demonstrate orthogonal task computation (clearer thoughts on this in the nb)
+- Think about how I'm going to find components of interest in the wild (when I don't have the outputs to backpropagate from)
+- Think about how I'd approach entity classification/embedding (much longer term)
+
+### `007-expand-backprop-analysis`
+
+Here I will:
+
+- train multiple models for analysis
+- do backprop from final output to all of the intermediate layer outputs (as well as the inputs)
+- confirm task orthogonality throughout
