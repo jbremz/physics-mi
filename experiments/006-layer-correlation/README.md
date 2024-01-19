@@ -129,3 +129,7 @@ Here I will:
 - train multiple models for analysis
 - do backprop from final output to all of the intermediate layer outputs (as well as the inputs)
 - confirm task orthogonality throughout
+
+Points:
+
+- I tried lightning because I thought it would make the code cleaner here but it slows down training considerably without really adding much 🤷
