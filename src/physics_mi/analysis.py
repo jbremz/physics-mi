@@ -9,7 +9,8 @@ from matplotlib import pyplot as plt
 from torch import nn
 
 warnings.filterwarnings(
-    "ignore", "This figure includes Axes that are not compatible with tight_layout, so results might be incorrect."
+    "ignore",
+    "This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.",
 )
 
 
@@ -38,7 +39,9 @@ def capture_intermediate_outputs(model, input_tensor):
     hooks = []
     for name, layer in model.named_modules():
         hook = layer.register_forward_hook(
-            lambda module, input, output, name=name: hook_fn(module, input, output, name)
+            lambda module, input, output, name=name: hook_fn(
+                module, input, output, name
+            )
         )
         hooks.append(hook)
 
@@ -48,7 +51,9 @@ def capture_intermediate_outputs(model, input_tensor):
     for hook in hooks:
         hook.remove()
 
-    filtered_values = {k: t for k, t in intermediate_values.items() if len(k.split(".")) > 2}
+    filtered_values = {
+        k: t for k, t in intermediate_values.items() if len(k.split(".")) > 2
+    }
     return filtered_values
 
 
@@ -59,19 +64,27 @@ def plot_neuron_contributions(model, N=5):
     """
 
     eps = 0.05
-    pairs = np.concatenate(np.stack(np.meshgrid(np.linspace(0, 1, N), np.linspace(0, 1, N))).T)
+    pairs = np.concatenate(
+        np.stack(np.meshgrid(np.linspace(0, 1, N), np.linspace(0, 1, N))).T
+    )
 
     outputs = capture_intermediate_outputs(model, torch.as_tensor(pairs).float())
     lws = model.state_dict()["layers.1.linear.weight"]
     acts = outputs["layers.0.act"]
-    acts = acts * lws[0, :]  # linear weighting now (I know they're not technically activations anymore)
+    acts = (
+        acts * lws[0, :]
+    )  # linear weighting now (I know they're not technically activations anymore)
 
-    fig = plt.figure(figsize=(12, 10))  # Increase the width to make space for the colorbar
+    fig = plt.figure(
+        figsize=(12, 10)
+    )  # Increase the width to make space for the colorbar
 
     for i in range(acts.shape[1]):
         ax = fig.add_subplot(4, 4, i + 1)
         col = acts[:, i]
-        activated_mask = acts[:, i].abs() > eps  # really trying to focus on the activated areas
+        activated_mask = (
+            acts[:, i].abs() > eps
+        )  # really trying to focus on the activated areas
         activated_mask = torch.ones(col.shape, dtype=bool)
         sc = ax.scatter(
             pairs[activated_mask, 0],
@@ -95,12 +108,24 @@ def plot_neuron_contributions(model, N=5):
 
     bias = float(model.state_dict()["layers.1.linear.bias"][0])
 
-    fig.suptitle(f"Output value at layers.1.linear.weight\n(pre addition of {bias:.2f} bias)")
-    fig.tight_layout(rect=[0, 0, 0.9, 1])  # Adjust the rectangle in which to fit the subplots
+    fig.suptitle(
+        f"Output value at layers.1.linear.weight\n(pre addition of {bias:.2f} bias)"
+    )
+    fig.tight_layout(
+        rect=[0, 0, 0.9, 1]
+    )  # Adjust the rectangle in which to fit the subplots
 
 
 def plot_model_breakdown(
-    x1, x2, model, point_selector, ax=None, legend=True, color=None, product_color=False, lines=True
+    x1,
+    x2,
+    model,
+    point_selector,
+    ax=None,
+    legend=True,
+    color=None,
+    product_color=False,
+    lines=True,
 ):
     """
     Plots the breakdown of a model's output into its intermediate components.
@@ -143,7 +168,13 @@ def plot_model_breakdown(
 
     for point_name, point in x.items():
         if point_selector[point_name]:
-            ax.scatter(*point, alpha=1.0, label=point_name, color=color, marker=markers[point_name])
+            ax.scatter(
+                *point,
+                alpha=1.0,
+                label=point_name,
+                color=color,
+                marker=markers[point_name],
+            )
 
     x_arr = np.array(list(x.values()))
 
@@ -191,18 +222,56 @@ def plot_subsets(model, axes=None, subsets=None):
         fig = plt.figure(figsize=(10, nrows * 5.5))
 
     N = 5
-    pairs = np.concatenate(np.stack(np.meshgrid(np.linspace(0, 1, N), np.linspace(0, 1, N))).T)
+    pairs = np.concatenate(
+        np.stack(np.meshgrid(np.linspace(0, 1, N), np.linspace(0, 1, N))).T
+    )
 
     titles = list(subsets[0].keys())[:-1]
 
     for i, (subset, title) in enumerate(zip(subsets, titles)):
         ax = fig.add_subplot(nrows, ncols, i + 1)
-        plot_model_breakdown(*pairs[0], model=model, ax=ax, product_color=True, point_selector=subset, lines=False)
+        plot_model_breakdown(
+            *pairs[0],
+            model=model,
+            ax=ax,
+            product_color=True,
+            point_selector=subset,
+            lines=False,
+        )
         for pair in pairs[1:]:
             plot_model_breakdown(
-                *pair, model=model, ax=ax, legend=False, product_color=True, point_selector=subset, lines=False
+                *pair,
+                model=model,
+                ax=ax,
+                legend=False,
+                product_color=True,
+                point_selector=subset,
+                lines=False,
             )
         ax.vlines(0, -2, 2, color="gray", ls="--", lw=0.5)
         ax.hlines(0, -2, 2, color="gray", ls="--", lw=0.5)
         ax.set_title(title)
         ax.set_aspect("equal")
+
+
+def map_acts(comps, acts):
+    """
+    Map activations to components to determine the level of activation along each component using PyTorch tensors.
+
+    This function performs a transformation that measures how much each activation vector in 'acts'
+    aligns with a set of given components in 'comps'. It multiplies each component with the
+    activations and sums the results, effectively projecting the activations onto the space defined
+    by the components.
+
+    Parameters:
+    comps (torch.Tensor): A 2D tensor where each row represents a component. These components
+                          are akin to basis vectors in a certain space.
+    acts (torch.Tensor): A 2D tensor of activations. Each row corresponds to an activation vector
+                         that will be mapped onto the components.
+
+    Returns:
+    torch.Tensor: A 2D tensor where each row represents an activation vector from 'acts'
+                  transformed into the component space defined by 'comps'. The output dimensions
+                  are determined by the number of components and the number of activation vectors.
+    """
+    return torch.einsum("ij,kj->ki", comps, acts)

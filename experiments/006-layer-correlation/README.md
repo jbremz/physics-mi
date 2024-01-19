@@ -130,6 +130,11 @@ Here I will:
 - do backprop from final output to all of the intermediate layer outputs (as well as the inputs)
 - confirm task orthogonality throughout
 
-Points:
+Points of note:
 
-- I tried lightning because I thought it would make the code cleaner here but it slows down training considerably without really adding much 🤷
+- I tried lightning because I thought it would make the code cleaner here but it slows down training considerably without really adding anything useful (for this usecase) 🤷
+
+Results:
+
+- Need to tidy up results but from eyeballing around 50 different graphs it looks like the task orthogonality holds across multiple different model trains across all the different outputs (as well as the input).
+- This is good news 👍 hopefully, now I can move on to building some computational graphs (after tidying)
