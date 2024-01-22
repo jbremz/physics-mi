@@ -136,5 +136,10 @@ Points of note:
 
 Results:
 
-- Need to tidy up results but from eyeballing around 50 different graphs it looks like the task orthogonality holds across multiple different model trains across all the different outputs (as well as the input).
-- This is good news 👍 hopefully, now I can move on to building some computational graphs (after tidying)
+- There is clear task orthogonality across all layers
+- The final layer is most orthogonal and the middle layer the least. Not sure if I completely understand why that is but it feels important that the final layer is orthogonal.
+- I now have a great measure of task orthogonality that I can use
+
+Plan now:
+
+- move onto building a computational graph by applying back prop one layer at a time
