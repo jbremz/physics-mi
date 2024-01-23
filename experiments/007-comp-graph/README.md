@@ -29,3 +29,5 @@ Here I'm going to
 - create the edge weights accordingly
 
 Let's see how I go.
+
+One thing I'm worrying about is whether we need to calculate the cross output component dot product on an example by example basis or whether it suffices to use an all vs. all on the unique gradients? It might be that for a particular example some gradients just aren't relevant/accurately applied.
