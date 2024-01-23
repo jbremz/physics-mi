@@ -30,4 +30,11 @@ Here I'm going to
 
 Let's see how I go.
 
-One thing I'm worrying about is whether we need to calculate the cross output component dot product on an example by example basis or whether it suffices to use an all vs. all on the unique gradients? It might be that for a particular example some gradients just aren't relevant/accurately applied.
+One thing I'm worrying about is whether we need to calculate the cross output component dot product on an example by example basis or whether it suffices to use an all vs. all on the unique gradients? It might be that for a particular example some gradients just aren't relevant/accurately applied. **Update:** I did a test and found that the gradients backpropped from different outputs always appear together, that's to say there are the same number of unique gradients for each separate output component as there are unique _combinations_ of gradients for all the output components combined (sorry there's definitely a much cleaner way of putting that). Probably worth checking and understanding, but this is great from a computational point of view because it means that we:
+
+- don't need to do some fiddly dot products across every single example in the dataset
+- even better, only need to do $n-1$ dot products per input node for $n$ output nodes (as each unique gradient for each output node only needs to be dotted with its equivalent for the other output nodes as it never appears in any other context)
+
+I'm getting a better intuition now for the fact that this computation graph will only represent a combination of all the possible paths for a data example. I'm keen to examine how much of the computational graph is activated for each data example.
+
+The gradient splintering happened even though I was back-propagating layer by layer and perhaps this makes sense. I can see this being an issue when thinking about scaling this method to deeper networks. Maybe there's some clustering that would be required. This feels like it potentially has links with superposition and scaling sparse autoencoders.
