@@ -10,6 +10,7 @@ Dream goal eventually here is to then apply this technique to a very basic netwo
 
 - I wonder if this would help in detecting/understanding adversarial examples better? i.e. we could look at the typical subgraph that's activated by examples in the dataset and unusually activated subgraphs might be finding adversarial routes through the network? 🤔
 - I have a feeling that non-zero'd activation functions (like GELU) would break this unique gradients thing I'm doing? But still I suppose in those situations you might have to do clustering as opposed to finding unique components.
+- Layerwise Relevance Propagation seems to be a similar method to this but I suppose is more interested in the input space than what's going on inside the network
 
 ## `001-inter-layer-backprop-graph`
 
