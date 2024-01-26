@@ -11,6 +11,7 @@ Dream goal eventually here is to then apply this technique to a very basic netwo
 - I wonder if this would help in detecting/understanding adversarial examples better? i.e. we could look at the typical subgraph that's activated by examples in the dataset and unusually activated subgraphs might be finding adversarial routes through the network? 🤔
 - I have a feeling that non-zero'd activation functions (like GELU) would break this unique gradients thing I'm doing? But still I suppose in those situations you might have to do clustering as opposed to finding unique components.
 - Layerwise Relevance Propagation seems to be a similar method to this but I suppose is more interested in the input space than what's going on inside the network
+- Just found this paper: [_Interpreting Neural Networks through the Polytype Lens_](https://www.lesswrong.com/posts/eDicGjD9yte6FLSie/interpreting-neural-networks-through-the-polytope-lens) which is very relevant and provides a nice description of a lot of the things I've been grappling with :) I have a strong feeling that my gradient splintering is closely related to if not a direct example of polytopes. They talk about the difficulties in interpretability this produces. I'm still finding that I'm able to extract useful structure from the gradients in terms of task separation, so let's see if I can continue with that without worrying too much about the _complete_ picture yet 😅
 
 ## `001-inter-layer-backprop-graph`
 
@@ -41,3 +42,11 @@ I'm getting a better intuition now for the fact that this computation graph will
 The gradient splintering happened even though I was back-propagating layer by layer and perhaps this makes sense. I can see this being an issue when thinking about scaling this method to deeper networks. Maybe there's some clustering that would be required. This feels like it potentially has links with superposition and scaling sparse autoencoders.
 
 What I'm struggling with right now is this idea of gradient uniqueness. It becoming clear that whilst the dendrogram-like graph structure explodes exponentially as we increase depth, the actual possible paths as a subset of the total paths dislpayed are many fewer. In fact, for each input layer, there are only as many paths as there are unique gradients _for an individual node_ in the output layer. For example, if we back propagate from layer1 to layer0 and there are 10 nodes in layer1, with 23 unique gradients per output node in layer0, that _doesn't_ actually leave us with $10 \times 23 = 230$ entry points in layer0 because in reality, only one of the 23 paths is being used at any time. That's to say, the required gradients to produce change in the downstream nodes always appear together. I need to find some way of representing this in my graph structure.
+
+### Results
+
+I produced more clean results on task separation here which is cool. The thing I really struggled with was understanding how I should approach inter-layer connectivity. This was straightforward when I could use back propagation from individual downstream nodes, but intra-task and inter-node similarity in the gradients was proving to be a headache for fitting this network idea my idea of a computational graph. I ended up thinking that perhaps a computational graph wasn't such a good fit for neural networks, it wouldn't express the full picture.
+
+Instead, where I've had most success is in clustering independent task features on a layer by layer basis, pulling out that kind of structure. My idea now is to continue on this line of enquiry and apply these same techniques to inputs that are partially independent i.e. there is logic for their combination.
+
+First I'll tidy up the back-propagation code 🙃 and then I'll move on to a simple toy experiment to start task mixing.
