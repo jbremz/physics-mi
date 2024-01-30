@@ -50,3 +50,47 @@ I produced more clean results on task separation here which is cool. The thing I
 Instead, where I've had most success is in clustering independent task features on a layer by layer basis, pulling out that kind of structure. My idea now is to continue on this line of enquiry and apply these same techniques to inputs that are partially independent i.e. there is logic for their combination.
 
 First I'll tidy up the back-propagation code 🙃 and then I'll move on to a simple toy experiment to start task mixing.
+
+## `002-tidy-backprop-code`
+
+That was painful but I managed it. The code is still not _really_ clean but I'm finding it hard to make it that way with this graph stuff. Often one needs to keep track of objects between operations making modularising into functions tricky. Equally, the OOP approach doesn't feel so nice here when we want to do big parallel operations across nodes (really we want to be doing that with pytorch tensors as opposed to for loops). Anyway, there's probably some way of improving this but this is good enough for now.
+
+## `003-simple-task-mixing`
+
+I'm hoping now with my cleaner code, I can now more efficiently examine other tasks with this backprop method.
+
+This first task I _think_ will involve a very trivial task mixing. There will be three inputs:
+- $x_1$ - one number to multiply with...
+- $x_2$ - another number
+- $g$ - a gate
+
+The logic is follows (in pseudo code):
+```python
+if g == 1:
+    return x1 * x2
+if g == 0:
+    return 0
+```
+This way, we'll hopefully see that `g` _has_ to mix into the output at some point.
+
+### Results
+
+...are unclear. I've realised my tasks are commutative so there could be all sorts of mixing going on at any stage. Time to try something less commutative:
+
+## `004-less-simple-task-mixing`
+
+I coded up this:
+$$
+\text{Step 1:} \quad f(x, y) = x - y \\
+\text{Step 2:} \quad g(f, z) = \frac{f}{z} = \frac{x - y}{z}
+$$
+
+There's definitely redundancy in the gradients that I can see in all the repeating patterns. It's where clustering would probably be a good idea...
+
+Still, I have another idea of what I could try.
+
+## `005-soft-mixing`
+
+I might return to our parallel multiplication problem and see what happens if I introduce a bit of "soft" mixing. That is, some form of mixing that I can tone down smoothly to the independent task again. I suggest mixing each outputs, so weighting each task output with a small amount of the other task output.
+
+Hopefully, this would allow us to studying the limiting cases more easily.
