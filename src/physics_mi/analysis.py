@@ -2,6 +2,7 @@ import warnings
 from collections import OrderedDict
 from math import ceil
 
+import matplotlib.colors as mcolors
 import numpy as np
 import torch
 from matplotlib import cm
@@ -39,9 +40,7 @@ def capture_intermediate_outputs(model, input_tensor):
     hooks = []
     for name, layer in model.named_modules():
         hook = layer.register_forward_hook(
-            lambda module, input, output, name=name: hook_fn(
-                module, input, output, name
-            )
+            lambda module, input, output, name=name: hook_fn(module, input, output, name)
         )
         hooks.append(hook)
 
@@ -51,9 +50,7 @@ def capture_intermediate_outputs(model, input_tensor):
     for hook in hooks:
         hook.remove()
 
-    filtered_values = {
-        k: t for k, t in intermediate_values.items() if len(k.split(".")) > 2
-    }
+    filtered_values = {k: t for k, t in intermediate_values.items() if len(k.split(".")) > 2}
     return filtered_values
 
 
@@ -64,27 +61,19 @@ def plot_neuron_contributions(model, N=5):
     """
 
     eps = 0.05
-    pairs = np.concatenate(
-        np.stack(np.meshgrid(np.linspace(0, 1, N), np.linspace(0, 1, N))).T
-    )
+    pairs = np.concatenate(np.stack(np.meshgrid(np.linspace(0, 1, N), np.linspace(0, 1, N))).T)
 
     outputs = capture_intermediate_outputs(model, torch.as_tensor(pairs).float())
     lws = model.state_dict()["layers.1.linear.weight"]
     acts = outputs["layers.0.act"]
-    acts = (
-        acts * lws[0, :]
-    )  # linear weighting now (I know they're not technically activations anymore)
+    acts = acts * lws[0, :]  # linear weighting now (I know they're not technically activations anymore)
 
-    fig = plt.figure(
-        figsize=(12, 10)
-    )  # Increase the width to make space for the colorbar
+    fig = plt.figure(figsize=(12, 10))  # Increase the width to make space for the colorbar
 
     for i in range(acts.shape[1]):
         ax = fig.add_subplot(4, 4, i + 1)
         col = acts[:, i]
-        activated_mask = (
-            acts[:, i].abs() > eps
-        )  # really trying to focus on the activated areas
+        activated_mask = acts[:, i].abs() > eps  # really trying to focus on the activated areas
         activated_mask = torch.ones(col.shape, dtype=bool)
         sc = ax.scatter(
             pairs[activated_mask, 0],
@@ -108,12 +97,8 @@ def plot_neuron_contributions(model, N=5):
 
     bias = float(model.state_dict()["layers.1.linear.bias"][0])
 
-    fig.suptitle(
-        f"Output value at layers.1.linear.weight\n(pre addition of {bias:.2f} bias)"
-    )
-    fig.tight_layout(
-        rect=[0, 0, 0.9, 1]
-    )  # Adjust the rectangle in which to fit the subplots
+    fig.suptitle(f"Output value at layers.1.linear.weight\n(pre addition of {bias:.2f} bias)")
+    fig.tight_layout(rect=[0, 0, 0.9, 1])  # Adjust the rectangle in which to fit the subplots
 
 
 def plot_model_breakdown(
@@ -222,9 +207,7 @@ def plot_subsets(model, axes=None, subsets=None):
         fig = plt.figure(figsize=(10, nrows * 5.5))
 
     N = 5
-    pairs = np.concatenate(
-        np.stack(np.meshgrid(np.linspace(0, 1, N), np.linspace(0, 1, N))).T
-    )
+    pairs = np.concatenate(np.stack(np.meshgrid(np.linspace(0, 1, N), np.linspace(0, 1, N))).T)
 
     titles = list(subsets[0].keys())[:-1]
 
@@ -275,3 +258,32 @@ def map_acts(comps, acts):
                   are determined by the number of components and the number of activation vectors.
     """
     return torch.einsum("ij,kj->ki", comps, acts)
+
+
+def get_sims(node_df, layer_key):
+    comps = torch.stack(node_df.loc[node_df["layer"] == layer_key, "comp"].tolist())
+    comps = comps / torch.norm(comps, dim=1, keepdim=True)
+    sims = torch.einsum("ij,kj->ik", comps, comps)
+    return sims
+
+
+def plot_similarity_matrix(sims):
+    """
+    Plots a similarity matrix.
+
+    Parameters:
+    sims (numpy.ndarray): The similarity matrix to be plotted.
+
+    Returns:
+    None
+    """
+    plt.imshow(sims)
+    # Set the colormap to something diverging
+    cmap = plt.get_cmap("coolwarm")
+
+    # Create a centered normalization
+    norm = mcolors.CenteredNorm(vcenter=0, halfrange=abs(sims).max())
+
+    # Plot the data with the divergent colormap and centered normalization
+    plt.imshow(sims, cmap=cmap, norm=norm)
+    plt.colorbar()  # Add color bar legend
