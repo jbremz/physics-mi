@@ -24,7 +24,9 @@ class LinearLayer(nn.Module):
 class SingleLayerNet(nn.Module):
     def __init__(self, use_act=True, dim=32, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.layers = nn.Sequential(LinearLayer(2, dim, use_act=use_act), LinearLayer(dim, 1, use_act=False))
+        self.layers = nn.Sequential(
+            LinearLayer(2, dim, use_act=use_act), LinearLayer(dim, 1, use_act=False)
+        )
 
     def forward(self, x):
         return self.layers(x)

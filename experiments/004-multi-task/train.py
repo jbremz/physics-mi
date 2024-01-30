@@ -60,7 +60,9 @@ class LinearLayer(nn.Module):
 
 
 class Net(nn.Module):
-    def __init__(self, input_dim=4, hidden_dim=16, output_dim=2, *args, **kwargs) -> None:
+    def __init__(
+        self, input_dim=4, hidden_dim=16, output_dim=2, *args, **kwargs
+    ) -> None:
         super().__init__(*args, **kwargs)
         self.layers = nn.Sequential(
             LinearLayer(input_dim, hidden_dim, use_act=True),
@@ -105,7 +107,9 @@ def capture_intermediate_outputs(model, input_tensor):
     hooks = []
     for name, layer in model.named_modules():
         hook = layer.register_forward_hook(
-            lambda module, input, output, name=name: hook_fn(module, input, output, name)
+            lambda module, input, output, name=name: hook_fn(
+                module, input, output, name
+            )
         )
         hooks.append(hook)
 
@@ -115,7 +119,9 @@ def capture_intermediate_outputs(model, input_tensor):
     for hook in hooks:
         hook.remove()
 
-    filtered_values = {k: t for k, t in intermediate_values.items() if len(k.split(".")) > 2}
+    filtered_values = {
+        k: t for k, t in intermediate_values.items() if len(k.split(".")) > 2
+    }
     return filtered_values
 
 
@@ -202,7 +208,9 @@ for repeat in tqdm(range(repeats)):
     res = {}
 
     N = 5
-    pairs = np.concatenate(np.stack(np.meshgrid(np.linspace(0, 1, N), np.linspace(0, 1, N))).T)
+    pairs = np.concatenate(
+        np.stack(np.meshgrid(np.linspace(0, 1, N), np.linspace(0, 1, N))).T
+    )
     pairs = pairs.repeat(2, axis=0).reshape(-1, 4)
     outputs = capture_intermediate_outputs(model, torch.as_tensor(pairs).float())
 
