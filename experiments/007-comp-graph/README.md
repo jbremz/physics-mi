@@ -94,3 +94,23 @@ Still, I have another idea of what I could try.
 I might return to our parallel multiplication problem and see what happens if I introduce a bit of "soft" mixing. That is, some form of mixing that I can tone down smoothly to the independent task again. I suggest mixing each outputs, so weighting each task output with a small amount of the other task output.
 
 Hopefully, this would allow us to studying the limiting cases more easily.
+
+### Results
+
+Turned out pretty nice. I made a nice grid plot with a number of trained networks with different values of $\lambda$ (the task mixing parameter I made). I created a task orthogonality score for the first layer and plotted it against $\lambda$ and you can see a nice decrease in task orthogonality as $\lambda$ increases, as expected.
+
+I suppose you could use this to generate an orthogonality score between any nodes in the same layer by partitioning the components of the previous layer correctly (according to the gradient dendrogram structure).
+
+### What now?
+
+What I've been able to do here is to pull out components that the network is using internally for different tasks. There remain some questions:
+1. if we make the task more difficult (i.e. not a single mathemetical operation), can we start to discern subtasks, or is this method not expressive enough for that?
+1. if we _can_ discern independent subtasks in the network, how can we then cluster them / put them in context?
+1. if we can do the above, can we move towards our unsupervised embedder of network components?
+1. there's the lingering question of how superposition might play a part in all of this... 🙈
+
+Ideas on what I'd like to do next:
+1. With 1. (above) in mind, I'd like to try to increase the task difficulty. Some ideas:
+    1. MNIST - hey I know that's a huge jump and _could_ also have all sorts of superposition trouble _but_ I think there might be benefit in at least trying. It might raise some issues that happen with real-life datasets and larger models (I imagine I'll have to make the model at least a little larger).
+    1. some nasty long mathematical formula idk 🤷
+1. I've been wanting to understand all these splintered gradients a little better and I've realised I can do a nice plot to explore this. It would involve looking at the input space for a single task in the multitask setting (ignoring the inputs for the other task given that we've proven there is negligible interference) and plotting the vector field of the gradients across a unit square input (with fun little arrows). I think this would be straightforward to do and might bring up some patterns that were otherwise not so obvious...
