@@ -267,23 +267,33 @@ def get_sims(node_df, layer_key):
     return sims
 
 
-def plot_similarity_matrix(sims):
+def plot_similarity_matrix(sims, ax=None, colorbar=True, axis=True):
     """
     Plots a similarity matrix.
 
     Parameters:
     sims (numpy.ndarray): The similarity matrix to be plotted.
+    ax (matplotlib.axes.Axes, optional): The axes on which to plot the matrix. If not provided, a new figure and axes will be created.
+    colorbar (bool, optional): Whether to include a colorbar legend. Default is True.
+    axis (bool, optional): Whether to display the axis ticks and labels. Default is True.
 
     Returns:
     None
     """
-    plt.imshow(sims)
-    # Set the colormap to something diverging
-    cmap = plt.get_cmap("coolwarm")
+    if ax is None:
+        fig, ax = plt.subplots()
 
     # Create a centered normalization
     norm = mcolors.CenteredNorm(vcenter=0, halfrange=abs(sims).max())
 
+    # Set the colormap to something diverging
+    cmap = plt.get_cmap("coolwarm")
+
     # Plot the data with the divergent colormap and centered normalization
-    plt.imshow(sims, cmap=cmap, norm=norm)
-    plt.colorbar()  # Add color bar legend
+    ax.imshow(sims, cmap=cmap, norm=norm)
+
+    if colorbar:
+        ax.colorbar()  # Add color bar legend
+
+    if not axis:
+        ax.axis("off")
