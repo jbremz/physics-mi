@@ -290,10 +290,10 @@ def plot_similarity_matrix(sims, ax=None, colorbar=True, axis=True):
     cmap = plt.get_cmap("coolwarm")
 
     # Plot the data with the divergent colormap and centered normalization
-    ax.imshow(sims, cmap=cmap, norm=norm)
+    mappable = ax.imshow(sims, cmap=cmap, norm=norm)
 
     if colorbar:
-        ax.colorbar()  # Add color bar legend
+        plt.colorbar(mappable, ax=ax)  # Add color bar legend
 
     if not axis:
         ax.axis("off")

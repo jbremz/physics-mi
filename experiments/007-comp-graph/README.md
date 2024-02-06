@@ -114,3 +114,27 @@ Ideas on what I'd like to do next:
     1. MNIST - hey I know that's a huge jump and _could_ also have all sorts of superposition trouble _but_ I think there might be benefit in at least trying. It might raise some issues that happen with real-life datasets and larger models (I imagine I'll have to make the model at least a little larger).
     1. some nasty long mathematical formula idk 🤷
 1. I've been wanting to understand all these splintered gradients a little better and I've realised I can do a nice plot to explore this. It would involve looking at the input space for a single task in the multitask setting (ignoring the inputs for the other task given that we've proven there is negligible interference) and plotting the vector field of the gradients across a unit square input (with fun little arrows). I think this would be straightforward to do and might bring up some patterns that were otherwise not so obvious...
+
+## `006-vector-field`
+
+I'm going with the latter option above because it should be pretty quick and is hopefully illuminating.
+
+### Plan
+
+1. Take trained model
+1. Calculate gradients for each grid point of a generated unit square
+1. Plot this field with little arrows 💘
+
+### Results
+
+- pretty good!
+- this is one of the few cases where I realise I'm able to get a theoretical prediction of what the gradients should look like and how the network is optimised to mimic them 😊
+- seems to be some fairly clear evidence in support of the polytope view of neural networks (maybe kind of seems obvious in retrospect...)
+
+### Where does this leave us?
+
+- well it seems to leave us right back in piecewise-linear land with probably the clearest idea of it yet (hehe it took me this long)
+- suggests that the network is indeed simply partitioning up the input space into many little regions that each act linearly on the output. I'm guessing that deeper/wider networks will just be able to partition the input space into smaller linear regions and therefore model non-linear functions (e.g. like this one) with higher fidelity?
+- this is still the independent and single task view though and I'm interested to see how one could:
+    - use this perspective to classify/embed parts of the network that lie between two points in a network (i.e. pairings of activation inputs and outputs with varying amounts of separation). Just in the same way that I was able to see that the gradients of my network mimicked the theoretically optimal gradients of $y=x_1x_2$, perhaps we could train a system to do the same thing? It would look at some input data and make out the piecewise linear regions and hopefully what they are modelling. Depending on where we put our "electrodes" we could measure the effect of the layers with increasing/decreasing granularity e.g. just look at the part of the network that deals with the region of high $x_1$ and low $x_2$.
+    - study the task mixing aspect... 
