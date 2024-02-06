@@ -136,5 +136,33 @@ I'm going with the latter option above because it should be pretty quick and is 
 - well it seems to leave us right back in piecewise-linear land with probably the clearest idea of it yet (hehe it took me this long)
 - suggests that the network is indeed simply partitioning up the input space into many little regions that each act linearly on the output. I'm guessing that deeper/wider networks will just be able to partition the input space into smaller linear regions and therefore model non-linear functions (e.g. like this one) with higher fidelity?
 - this is still the independent and single task view though and I'm interested to see how one could:
-    - use this perspective to classify/embed parts of the network that lie between two points in a network (i.e. pairings of activation inputs and outputs with varying amounts of separation). Just in the same way that I was able to see that the gradients of my network mimicked the theoretically optimal gradients of $y=x_1x_2$, perhaps we could train a system to do the same thing? It would look at some input data and make out the piecewise linear regions and hopefully what they are modelling. Depending on where we put our "electrodes" we could measure the effect of the layers with increasing/decreasing granularity e.g. just look at the part of the network that deals with the region of high $x_1$ and low $x_2$.
+    - use this perspective to classify/embed parts of the network that lie between two points in a network (i.e. pairings of activation inputs and outputs with varying amounts of separation). Just in the same way that I was able to see that the gradients of my network mimicked the theoretically optimal gradients of $y=x_1x_2$, perhaps we could train a system to do the same thing? It would look at some input data gradients and make out the piecewise linear regions and hopefully what they are modelling. Depending on where we put our "electrodes" we could measure the effect of the layers with increasing/decreasing granularity e.g. just look at the part of the network that deals with the region of high $x_1$ and low $x_2$.
     - study the task mixing aspect... 
+
+### Thinking more about classification
+
+In the back of my head I've still been wondering how I might train an unsupervised system to embed different parts of the network. Here's my latest idea (based on the thoughts above):
+- provide:
+    - intermediate activations (a sampling of the space)
+    - the gradients produced between these intermediate activations and some component later on in the layer (how far later depends on the granularity of your study)
+- train it with a cloze task. Given _all_ of the inputs and only some of the gradients the model needs to fill in the missing gradients, and in doing so hopefully understand the underlying function it represents. This amounts to predicting piecewise-linear sections of a larger function.
+- can extract an embedding which would hopefully represent some information about the underlying function being modelled by that part of the network (on that data)
+
+How I might test the usefulness of this method:
+1. Train a variety of different (single) tasks - probably different mathematical formulae for now. Multiple trains for each task so I build up my "dataset" of different models e.g. 10 tasks x 50 models/task = 500 models. 
+1. Partition my dataset traditionally so that each task appears in both the training and validation sets but _importantly_ with different seeded trained models e.g. 10 models per task are in the validation set
+1. Generate new input data each batch and run it through the models in question (probably is easier to use the same input data across all models per batch) and backpropagate to generate the gradients of the inputs with respect to the outputs
+1. For each example in the batch:
+    1. extract the _unique_ gradients
+    1. pick some to mask
+    1. create embedder inputs:
+        1. all inputs
+        1. masked input gradients
+    1. outputs:
+        1. unmasked gradients
+1. feed these embedder inputs into the embedding model
+1. loss function is some regression with the correct gradients
+
+We could then see if we're able to train a linear classifier on top of embeddings from this network to classify the different tasks original tasks that produced the models.
+
+The idea is that here we're pretending that these full models are sub-models of a larger model. We could just as easily apply the same method but only _within_ the layers of a larger model. The same principles apply. Here we're instead using our knowledge of the underlying task distribution to test the quality of the the embeddings produced.
