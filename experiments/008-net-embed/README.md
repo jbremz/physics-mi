@@ -41,3 +41,7 @@ My priorities will be (in order):
 1. maybe make some pretty plots of the gradients to also observe the line-sections more clearly (like I did with the vector fields) and to compare them with their theoretical gradients
 1. train the embedder (should I call it feature extractor?) model on the cloze task, removing certain unique gradients for it to predict (need to come up with a suitable 1D mask value) - make sure this trains ok otherwise we probably don't have much hope of seeing structure in the embedding space
 1. examine the structure of the embedding space with respect to the different underlying polynomials that produced the data points. Can we cluster them? Can we train a linear classifier on top of them?
+
+### Thoughts
+
+- need to get enough variety in the polynomials, they tend to look the same with a naïve sampling strategy
