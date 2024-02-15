@@ -45,3 +45,27 @@ My priorities will be (in order):
 ### Thoughts
 
 - need to get enough variety in the polynomials, they tend to look the same with a naïve sampling strategy
+
+### Results
+
+Maybe there's _some_ structure in this space? I'm not sure if that's trivially true though anyway because each function has a different shape and we're outputting the shape 🤷 I'm also aware that my model has overfit and generally isn't performing so well. I think for these we need to train a nice well-performing model before we see any clean results.
+
+I'm going to roll back a bit in the next notebook and try and simpler straight up classification of the functions from their gradients. This should be easier and hopefully at least tell me that enough information is there. Then the task goes back to whether we can come up with an unsupervised method for extracting embeddings (because in real-world applications we cannot train in a supervised way).
+
+## `02-func-classifier`
+
+As I just mentioned, it's simpler to take these models and train a classifier just so I'm not making _too_ much of a leap at once. I'm starting to push the limits of what I can sensibly train on this MBP 😭
+
+### Results
+
+Ok this was straightforward.
+
+To be honest, this seems extremely trivial. I can _see_ that the gradients are distinct (and therefore classifiable) between each function, so being able to train a classifier on it is no surprise. _Now_ it's just a case of training something _unsupervised_ to pull out the same information 🤔.
+
+One potential issue I forsee is what happens when your input space becomes loads larger. Obviously 1D is fine because we can sample densely. I'd imagine for high dimensional input spaces we'd just need bigger models...
+
+I've been thinking a little more about whether what I'm doing is _generally_ really trivial. For example, is this predict/embed-the-function-from-the-gradients thing the same as basically predicting the raw outputs from the raw inputs i.e. are we not essentially just training a model to replicate another model? Well, firstly, not quite because the gradients are a more _functional_ view of the element we are examining (e.g. MLP) than the pure input/output space - given dense enough sampling (so that we have degeneracy in the gradient space) it is telling us what is this element _doing_ to the input in this _general region_ of the input space, in my head it provides more structure. What's more, even if our trained inspector models are somewhat replicating the element under examination, they produce an output that is much more useful to us (hopefully) i.e. one that contains information about the _element_ not the inputs.
+
+## `03-embedder-again`
+
+Now I know I can definitely classify the different functions well from their gradients, I'm going to continue with my previous idea of doing the same thing but in an unsupervised way.
