@@ -77,3 +77,35 @@ Brought it back down the cloze task for only two functions and we now have nice 
 ## `04-bottleneck`
 
 Now that I've got an unsupervised model embedder that creates a meaningful representational space (albeit with only two underlying functions to embed) I'm going to try and crank it up a bit (to embed more functions). One idea I've had is to create a bottleneck layer that will hopefully force the network to squeeze the models into their separate classes.
+
+### Results
+
+- Works nicely for 5 functions (and a bottleneck dimension of 4) with a linear probe accuracy of ~90% for separating into different functions
+- In order to get good representations there seems to be a delicate balance between:
+    - number of distinct functions to represent
+    - the information contained in each function (distinguishability / number of high freq. components)
+    - capacity of base models
+    - how much masking to use in the cloze task
+    - the bottleneck dimension
+- This I suppose is to be expected with representation learning
+- when I increase to 10 different functions, there is still separation but performance drops off much more (linear probe accuracy of ~40%) - will need to think about how I could scale this method well
+
+### Thoughts
+
+Taking a step back again, we have achieved:
+- a process from which we can cluster together (to some degree of accuracy - which I'm sure can be improved) different neural networks in terms of what function they are modelling using only access to the model and a typical data distribution for that model
+
+This maybe doesn't seem very useful in this case because we're applying it to full models where we have prior knowledge of the function they're modelling (because we've trained them e2e). In order for this method to be useful we need to answer:
+- can we apply this internally in a network to study internal structure?
+    - does a higher dimensional input space cause lots of problems with scaling (it really might)
+    - what units of the network should we study? Just layers? Groups of layers? Can we train embedders that are scale invariant?
+- if so, how can we verify that the structure extracted is indeed useful to us? How do we make sense of these embeddings?
+
+My hope is that if we're be able to pull out some similarity scores for elements within a network, then we might be able to piece them together to move towards _classifying_ what they're doing.
+
+### Next steps
+
+I kind of wonder if we're getting towards an MNIST example 🤔 concrete steps to achieve that:
+1. Train an MLP on MNIST (as small as possible with good accuracy)
+1. Train my embedder with various different input and output nodes - maybe I could contrain this more at first?
+1. see what happens with the embeddings?
