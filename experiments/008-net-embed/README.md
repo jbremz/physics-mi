@@ -69,3 +69,11 @@ I've been thinking a little more about whether what I'm doing is _generally_ rea
 ## `03-embedder-again`
 
 Now I know I can definitely classify the different functions well from their gradients, I'm going to continue with my previous idea of doing the same thing but in an unsupervised way.
+
+### Results
+
+Brought it back down the cloze task for only two functions and we now have nice clustering :)
+
+## `04-bottleneck`
+
+Now that I've got an unsupervised model embedder that creates a meaningful representational space (albeit with only two underlying functions to embed) I'm going to try and crank it up a bit (to embed more functions). One idea I've had is to create a bottleneck layer that will hopefully force the network to squeeze the models into their separate classes.
