@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import torch
 from matplotlib import pyplot as plt
+from tqdm.auto import tqdm
 
 from .utils import unique
 
@@ -194,17 +195,20 @@ def generate_graph(ios, layer_keys, scaffold_model):
     reverse_indices = list(range(len(layer_keys) - 1))[::-1]
 
     # Iterate over pairs of layers (backwards)
-    for lidx, lk_input, lk_output in zip(
-        reverse_indices,
-        reversed_layer_keys[1:],
-        reversed_layer_keys[:-1],
+    for lidx, lk_input, lk_output in tqdm(
+        zip(
+            reverse_indices,
+            reversed_layer_keys[1:],
+            reversed_layer_keys[:-1],
+        ),
+        total=len(reverse_indices),
     ):
         input_layer_acts, output_layer_acts = forward_pass(ios, lk_input, lidx, scaffold_model)
         output_layer_nodes = node_df.loc[node_df["layer"] == lk_output]
         output_layer_comp_acts = process_outputs(output_layer_acts, output_layer_nodes)
 
         # backprop from each node/component of the output layer
-        for cidx, comp_acts in enumerate(output_layer_comp_acts.transpose(1, 0)):
+        for cidx, comp_acts in tqdm(enumerate(output_layer_comp_acts.transpose(1, 0)), leave=False):
             uq_input_grads, uq_input_grad_norms = get_unique_gradients(comp_acts, input_layer_acts)
 
             # store the gradients and their norms as nodes and edges
