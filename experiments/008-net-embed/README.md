@@ -93,6 +93,20 @@ Now that I've got an unsupervised model embedder that creates a meaningful repre
 - This I suppose is to be expected with representation learning
 - when I increase to 10 different functions, there is still separation but performance drops off much more (linear probe accuracy of ~40%) - will need to think about how I could scale this method well
 
+## `05-bottleneck-static-grid`
+
+I realised there were a couple of modifications I could make to make this experiment a clearer demonstration:
+1. Sample from a static 1D grid when training my embedder model - this would make the network's job easier as the inputs wouldn't be translated between every example
+1. Produce embeddings for analysis using the unmasked gradients - there's no need to mask these during inference as they're going to just add noise to the embeddings
+
+It's worth pointing out that 1. is probably only really possible in simple toy cases because on real world models the input space to any layer is going to be high-dimensional and the data distributed sparsely and inhomogenously in that space so a simple static grid sample probably isn't going to be a very efficient way of providing the embedder with the important information about the structure of the function being modelled. That being said, there's no reason why we shouldn't use it here, it allows us to use lower capacity embedder model (which is easier to train on my laptop 😅).
+
+The eventual embedder model will need to be able to take a dynamically sampled input but I'm confident it would just be a case of model capacity, there are models out there that would eat up this kind of problem.
+
+### Results
+
+I'm glad I did this because the results are so much cleaner :) the functions are completely linearly separable _and_ the embedding space seems to have meaningful structure where similar shaped functions are embedded close to eachother 💪 
+
 ### Thoughts
 
 Taking a step back again, we have achieved:
