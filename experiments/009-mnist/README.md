@@ -29,4 +29,12 @@ Same as before but with this smaller dataset. I decided just to focus on the tas
 - this worked out nice
 - interesting to see the differences between this classification task vs the toy regression tasks I've been using. General point is that you start to see inter-class gradients negatively interfering from quite early on - this makes sense as the presence of one class is negative evidence for the presence of another :) in this way, the tasks are definitely "mixed"
 - There is also mixing between the first two classes suggesting that there are some parts of the input space in the 2nd class for which similar components to 1st class will be used to increase the 2nd class' probability.
-- Now I think we can go onto the next 
+- Now I think we can go onto the embedding
+
+## `03-iris-mlp-embed`
+
+Ok so, I've been thinking, and one nice experiment I thought I could potentially do is to train my multi-task networks again with their identical but independent tasks so I would _know_ that there should be similar functional behaviour across each "branch". How I'm seeing it:
+- stack up Iris data randomly so that we have 6 inputs to our MLP (two sets of 3 inputs each) and 6 outputs. Each input/output pair is randomly sampled from the Iris set.
+- applying my gradient field embedding method to various computational units of the network
+
+To start with, I think it's a good idea to constrain. I think what I'll do is focus on modelling a single layer unit i.e. a component and it's first generation "children" in the preceding layer. I _hope_ to find similarities across child units of each task since they are modelling the same data.
