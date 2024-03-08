@@ -38,3 +38,9 @@ Ok so, I've been thinking, and one nice experiment I thought I could potentially
 - applying my gradient field embedding method to various computational units of the network
 
 To start with, I think it's a good idea to constrain. I think what I'll do is focus on modelling a single layer unit i.e. a component and it's first generation "children" in the preceding layer. I _hope_ to find similarities across child units of each task since they are modelling the same data.
+
+### Results
+
+Struggling to get any intelligible embedding space here. I think I may have over-reached.
+
+I think what I'll do next is return to the problem I examined in `008-net-embed/05-bottleneck-satic-grid.ipynb` and increase the input space dimensionality gradually. If I can get it working well with 64D data and toy data then maybe I'll be in a better position. If it still doesn't work, then it'd be a case of understanding at what point it breaks down.
