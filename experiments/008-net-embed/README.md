@@ -129,3 +129,7 @@ I kind of wonder if we're getting towards an MNIST example 🤔 concrete steps t
 1. Train an MLP on MNIST (as small as possible with good accuracy)
 2. Train my embedder with various different input and output nodes - maybe I could constrain this more at first?
 3. see what happens with the embeddings?
+
+## `06-bottleneck-static-grid-higher-d.ipynb`
+
+I tried moving in a bigger leap towards real datasets but I'm going to try smaller steps again now. Here I'm just increasing the dimensionality of the input data. I'll try and scale this up until we reach something sensible like 64 dimensions and see if the separation still holds on controlled toy data.
